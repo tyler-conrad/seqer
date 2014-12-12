@@ -1,7 +1,9 @@
 from time import time
+from Queue import Queue
+from Queue import Empty
 
-from midi.fileio import FileReader
-from midi.util import write_varlen
+from midi.fileio import FileReader, FileWriter
+from midi.util import write_varlen, read_varlen
 
 
 def CountDevices():
@@ -32,6 +34,11 @@ init_time = get_time()
 def Time():
     """Return the current time in ms of the PortMidi timer."""
     return get_time() - init_time
+
+io_buffer = Queue()
+file_reader = FileReader()
+file_writer = FileWriter()
+file_writer.RunningStatus = None
 
 class Output:
     """Represents an output MIDI stream device.
@@ -85,9 +92,11 @@ class Output:
             return
 
         for event in data:
-            print FileReader().parse_midi_event(iter(
-                write_varlen(event[1]) + ''.join(chr(num) for num in event[0])))
-
+            io_buffer.put(file_reader.parse_midi_event(iter(
+                write_varlen(event[1]) + ''.join(
+                    chr(num) for num in event[0]))),
+                block=True,
+                timeout=0)
 
 
 class Input:
@@ -102,6 +111,13 @@ class Input:
     def __init__(self, input_device, buffersize=4096):
         """Instantiate MIDI input stream object."""
 
+    def Poll(self):
+        """Test whether input is available.
+
+        Returns TRUE if input can be read, FALSE otherwise, or an error value.
+
+        """
+        return not io_buffer.empty()
 
     def Read(self, max_events):
         """Read and return up to max_events events from input.
@@ -116,4 +132,20 @@ class Input:
             ]
 
         """
+        if not self.Poll():
+            return []
 
+        event_list = []
+        for i in range(max_events):
+            try:
+                encoded = file_writer.encode_midi_event(
+                    io_buffer.get(block=True, timeout=0))
+            except Empty:
+                break
+            finally:
+                file_writer.RunningStatus = None
+
+            timestamp = read_varlen(encoded)
+            event_list.append([[ord(num) for num in encoded], timestamp])
+
+        return event_list
