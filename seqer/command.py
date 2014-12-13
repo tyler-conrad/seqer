@@ -55,17 +55,35 @@ class RecoverableException(Exception):
 
 
 class RollbackMacroCommand(UndoableMacroCommand):
-    def execute(self):
-        completed_commands = []
-        for command in self.command_list:
+    @staticmethod
+    def run(command_list, do, undo):
+        completed_command_list = []
+        for command in command_list:
             try:
-                command.execute()
+                if hasattr(command, do):
+                    getattr(command, do)()
+                else:
+                    #log
+                    pass
             except RecoverableException as e:
                 #log
-                for completed_command in completed_commands:
-                    completed_command.unexecute()
+                for completed_command in reversed(completed_command_list):
+                    if hasattr(command, undo):
+                        getattr(completed_command, undo)
+                break
+            completed_command_list.append(command)
 
-            completed_commands.append(command)
+    def execute(self):
+        RollbackMacroCommand.run(
+            command_list=self.command_list,
+            do='execute',
+            undo='unexecute')
+
+    def unexecute(self):
+        RollbackMacroCommand.run(
+            command_list=reversed(self.command_list),
+            do='unexecute',
+            undo='execute')
 
 if __name__ == '__main__':
     class Printer(UndoableCommand):
@@ -83,3 +101,24 @@ if __name__ == '__main__':
 
     printer_macro.execute()
     printer_macro.unexecute()
+
+    print '-' * 80
+
+    class NonUndoableCommand(Command):
+        def execute(self):
+            print 'nonundoable command'
+
+    class Raiser(Command):
+        def execute(self):
+            print 'exeception'
+            raise RecoverableException('exception occured', None)
+
+    rollback_macro_command = RollbackMacroCommand(
+        command_list=[
+            Printer(),
+            NonUndoableCommand(),
+            Printer(),
+            Raiser()])
+
+    rollback_macro_command.execute()
+    rollback_macro_command.unexecute()
