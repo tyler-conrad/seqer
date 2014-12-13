@@ -1,22 +1,27 @@
+"""An implementation of the Command Pattern."""
+
 from abc import ABCMeta
 from abc import abstractmethod
 from collections import MutableSequence
 
 class Command(object):
+    """Abstract base class for all command objects."""
     __metaclass__ = ABCMeta
 
     @abstractmethod
     def execute(self):
-        """Execute the command"""
+        """Execute the command."""
 
 
 class UndoableCommand(Command):
+    """Abstract base class for command support undo functionality."""
     @abstractmethod
     def unexecute(self):
-        """Reverses the effects of execute"""
+        """Reverses the effects of execute."""
 
 
 class MacroCommand(Command, MutableSequence):
+    """A command that aggregates other commands."""
     def __init__(self, command_list=None):
         self.command_list = []
         if command_list:
@@ -43,18 +48,28 @@ class MacroCommand(Command, MutableSequence):
 
 
 class UndoableMacroCommand(UndoableCommand, MacroCommand):
+    """A command that aggregates other commands that support undo
+    functionality.
+    """
     def unexecute(self):
         for command in reversed(self.command_list):
             command.unexecute()
 
 
 class RecoverableException(Exception):
-    def __init__(self, msg, exception):
+    """Exception raised by commands when a recoverable error has occured.
+
+    Can be used to wrap an existing exception object.
+    """
+    def __init__(self, msg, exception=None):
         self.msg = msg
         self.exception = exception
 
 
 class RollbackMacroCommand(UndoableMacroCommand):
+    """A MacroCommand whose execute and unexecute operations must complete
+    without raising a RecoverableException or be rolled back.
+    """
     @staticmethod
     def run(command_list, do, undo):
         completed_command_list = []
