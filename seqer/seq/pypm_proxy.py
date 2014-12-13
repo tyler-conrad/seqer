@@ -38,7 +38,6 @@ def Time():
 io_buffer = Queue()
 file_reader = FileReader()
 file_writer = FileWriter()
-file_writer.RunningStatus = None
 
 class Output:
     """Represents an output MIDI stream device.
@@ -92,12 +91,9 @@ class Output:
             return
 
         for event in data:
-            io_buffer.put(file_reader.parse_midi_event(iter(
+            io_buffer.put_nowait(file_reader.parse_midi_event(iter(
                 write_varlen(event[1]) + ''.join(
-                    chr(num) for num in event[0]))),
-                block=True,
-                timeout=0)
-
+                    chr(num) for num in event[0]))))
 
 class Input:
     """Represents an input MIDI stream device.
@@ -137,15 +133,14 @@ class Input:
 
         event_list = []
         for i in range(max_events):
+            file_writer.RunningStatus = None
             try:
                 encoded = file_writer.encode_midi_event(
                     io_buffer.get(block=True, timeout=0))
             except Empty:
                 break
-            finally:
-                file_writer.RunningStatus = None
 
-            timestamp = read_varlen(encoded)
+            timestamp = read_varlen(iter(encoded))
             event_list.append([[ord(num) for num in encoded], timestamp])
 
         return event_list
