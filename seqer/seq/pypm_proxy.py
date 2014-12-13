@@ -10,6 +10,7 @@ def CountDevices():
     """Return number of available MIDI (input and output) devices."""
     return 2
 
+
 def GetDeviceInfo(device_no):
     """Return device info tuple for MIDI device given by device_no.
 
@@ -27,9 +28,11 @@ def GetDeviceInfo(device_no):
         ('seqer', 'input', 1, 0, 0)
     ][device_no]
 
+
 def get_time():
     return int(time() * 1000)
 init_time = get_time()
+
 
 def Time():
     """Return the current time in ms of the PortMidi timer."""
@@ -38,6 +41,7 @@ def Time():
 io_buffer = Queue()
 file_reader = FileReader()
 file_writer = FileWriter()
+
 
 class Output:
     """Represents an output MIDI stream device.
@@ -94,6 +98,7 @@ class Output:
             io_buffer.put_nowait(file_reader.parse_midi_event(iter(
                 write_varlen(event[1]) + ''.join(
                     chr(num) for num in event[0]))))
+
 
 class Input:
     """Represents an input MIDI stream device.
