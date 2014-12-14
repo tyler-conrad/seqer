@@ -18,6 +18,7 @@ from signal import SIGINT
 from kivy.config import Config
 from kivy.base import EventLoop
 from kivy.base import stopTouchApp
+from kivy.interactive import InteractiveLauncher
 from kivy.app import App
 from kivy.resources import resource_add_path
 
@@ -59,7 +60,7 @@ def main():
     resource_add_path(dirname(argv[0]) + '/assets')
 
     run(version='')
-    SeqerApp().run()
+    InteractiveLauncher(SeqerApp()).run()
 
 
 if __name__ == '__main__':
