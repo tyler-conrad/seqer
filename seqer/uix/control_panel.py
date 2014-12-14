@@ -40,7 +40,7 @@ class ControlButton(Button):
 
     def __init__(self, **kwargs):
         super(ControlButton, self).__init__(**kwargs)
-        self.translate = Translate(0, 0)
+        self.translate = Translate(0.0, 0.0)
         self.instruction_group = self._build_group()
         self.canvas.after.add(self.instruction_group)
 
