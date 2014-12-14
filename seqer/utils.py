@@ -1,7 +1,7 @@
-from kivy.utils import QueryDict as KivyQueryDict
+from kivy.metrics import dp
 
 
-class QueryDict(KivyQueryDict):
+class QueryDict(dict):
     '''QueryDict is a dict() that can be queried with dot.
 
     .. versionadded:: 1.0.4
@@ -19,4 +19,10 @@ class QueryDict(KivyQueryDict):
         try:
             return self.__getitem__(attr)
         except KeyError:
-            return super(QueryDict, self).__getattr__(attr)
+            return super(QueryDict, self).__getitem__(attr)
+
+    def __setattr__(self, attr, value):
+        self.__setitem__(attr, value)
+
+def map_dp(iterable):
+    return [dp(i) for i in iterable]

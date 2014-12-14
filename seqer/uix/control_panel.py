@@ -109,11 +109,14 @@ class PlayPauseButton(ControlToggleButton):
 class ControlPanel(BoxLayout):
     def __init__(self, **kwargs):
         super(ControlPanel, self).__init__(**kwargs)
+        Clock.schedule_once(self.init, -1)
+
+    def init(self, dt):
+        self.is_stopped = True
         self.control = QueryDict(self.ids)
         self.control.record.bind(state=self.on_record)
         self.control.stop.bind(on_press=self.on_stop_press)
-        self.control.play.bind(state=self.on_play)
-        self.is_stopped = True
+        self.control.play_pause.bind(state=self.on_play_pause)
 
     def disable_scrubbing(self, is_disabled):
         self.control.rewind.disabled = is_disabled
@@ -133,5 +136,5 @@ class ControlPanel(BoxLayout):
             pass
             # todo: move cursor to start of pattern
 
-    def on_play(self, play_button, state):
+    def on_play_pause(self, play_pause_button, state):
         self.is_stopped = False

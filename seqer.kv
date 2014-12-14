@@ -1,6 +1,14 @@
 #:import ControlPanel seqer.uix.control_panel.ControlPanel
+#:import BPMGauge seqer.uix.bpm_gauge.BPMGauge
 
-ControlPanel:
+
+BoxLayout:
+    orientation: 'vertical'
     BoxLayout:
-        Button:
-        Button:
+        orientation: 'horizontal'
+        size_hint_y: 0.2
+
+        ControlPanel:
+        BPMGauge:
+    Button:
+        size_hint_y: 0.8
