@@ -32,8 +32,11 @@ class MacroCommand(Command, MutableSequence):
     def __len__(self):
         return len(self.command_list)
 
-    def __getitem__(self, index):
-        return self.command_list[index]
+    def __getitem__(self, index_or_slice):
+        if isinstance(index_or_slice, slice):
+            return MacroCommand(
+                command_list=self.command_list[index_or_slice])
+        return self.command_list[index_or_slice]
 
     def __setitem__(self, index, value):
         self.command_list[index] = value
