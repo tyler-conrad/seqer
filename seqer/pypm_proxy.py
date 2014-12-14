@@ -5,6 +5,7 @@ from Queue import Empty
 from midi.fileio import FileReader, FileWriter
 from midi.util import write_varlen, read_varlen
 
+from sequencer import sequencer
 
 def CountDevices():
     """Return number of available MIDI (input and output) devices."""
@@ -39,6 +40,7 @@ def Time():
     return get_time() - init_time
 
 io_buffer = Queue()
+record_buffer = Queue()
 file_reader = FileReader()
 file_writer = FileWriter()
 
@@ -95,9 +97,12 @@ class Output:
             return
 
         for event in data:
-            io_buffer.put_nowait(file_reader.parse_midi_event(iter(
+            midi_event = file_reader.parse_midi_event(iter(
                 write_varlen(event[1]) + ''.join(
-                    chr(num) for num in event[0]))))
+                    chr(num) for num in event[0])))
+            io_buffer.put_nowait(midi_event)
+            if sequencer.is_recording:
+                record_buffer.put_nowait(midi_event)
 
 
 class Input:

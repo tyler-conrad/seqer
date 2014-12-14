@@ -38,11 +38,11 @@ class MacroCommand(Command, MutableSequence):
                 command_list=self.command_list[index_or_slice])
         return self.command_list[index_or_slice]
 
-    def __setitem__(self, index, value):
-        self.command_list[index] = value
+    def __setitem__(self, index_or_slice, value):
+        self.command_list[index_or_slice] = value
 
-    def __delitem__(self, index):
-        del self.command_list[index]
+    def __delitem__(self, index_or_slice):
+        del self.command_list[index_or_slice]
 
     def insert(self, index, value):
         self.command_list.insert(index, value)
