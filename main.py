@@ -10,6 +10,8 @@ log.addObserver(log.PythonLoggingObserver('kivy').emit)
 from seqer import pypm_proxy
 sys.modules['pypm'] = pypm_proxy
 
+from os.path import dirname
+from sys import argv
 from signal import signal
 from signal import SIGINT
 
@@ -17,7 +19,7 @@ from kivy.config import Config
 from kivy.base import EventLoop
 from kivy.base import stopTouchApp
 from kivy.app import App
-from kivy.uix.button import Button
+from kivy.resources import resource_add_path
 
 from rtpmidi.runner import before_shutdown
 
@@ -27,9 +29,6 @@ from seqer.sequencer import Sequencer
 
 
 class SeqerApp(App):
-    def build(self):
-        return Button()
-
     def on_start(self):
         sequencer = Sequencer()
         sequencer.set_pattern_manager(PatternManager())
@@ -56,6 +55,8 @@ def main():
     EventLoop.bind(on_stop=on_stop)
 
     Config.set('graphics', 'fullscreen', 0)
+
+    resource_add_path(dirname(argv[0]) + '/assets')
 
     run(version='')
     SeqerApp().run()
