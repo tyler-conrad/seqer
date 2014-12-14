@@ -5,7 +5,9 @@ from Queue import Empty
 from midi.fileio import FileReader, FileWriter
 from midi.util import write_varlen, read_varlen
 
-from sequencer import sequencer
+from seqer.state import is_recording_lock
+from seqer import state
+
 
 def CountDevices():
     """Return number of available MIDI (input and output) devices."""
@@ -101,8 +103,10 @@ class Output:
                 write_varlen(event[1]) + ''.join(
                     chr(num) for num in event[0])))
             io_buffer.put_nowait(midi_event)
-            if sequencer.is_recording:
-                record_buffer.put_nowait(midi_event)
+
+            with is_recording_lock:
+                if state.is_recording:
+                    record_buffer.put_nowait(midi_event)
 
 
 class Input:
@@ -145,8 +149,7 @@ class Input:
         for i in range(max_events):
             file_writer.RunningStatus = None
             try:
-                encoded = file_writer.encode_midi_event(
-                    io_buffer.get(block=True, timeout=0))
+                encoded = file_writer.encode_midi_event(io_buffer.get_nowait())
             except Empty:
                 break
 

@@ -7,7 +7,7 @@ from kivy.support import _twisted_reactor_stopper
 from twisted.python import log
 log.addObserver(log.PythonLoggingObserver('kivy').emit)
 
-from seqer.seq import pypm_proxy
+from seqer import pypm_proxy
 sys.modules['pypm'] = pypm_proxy
 
 from signal import signal
@@ -22,11 +22,18 @@ from kivy.uix.button import Button
 from rtpmidi.runner import before_shutdown
 
 from seqer.rtpmidi.runner import run
+from seqer.manager import PatternManager
+from seqer.sequencer import Sequencer
 
 
 class SeqerApp(App):
     def build(self):
         return Button()
+
+    def on_start(self):
+        sequencer = Sequencer()
+        sequencer.set_pattern_manager(PatternManager())
+        sequencer.record()
 
 
 def on_stop(event_loop):
