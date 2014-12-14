@@ -4,6 +4,8 @@ from abc import ABCMeta
 from abc import abstractmethod
 from collections import MutableSequence
 
+from seqer.logger import warn
+
 class Command(object):
     """Abstract base class for all command objects."""
     __metaclass__ = ABCMeta
@@ -65,23 +67,29 @@ class RecoverableException(Exception):
         self.msg = msg
         self.exception = exception
 
+    def __str__(self):
+        msg = self.msg
+        if self.exception:
+            msg += '\n\t' + self.exception.msg
+        return msg
+
 
 class RollbackMacroCommand(UndoableMacroCommand):
     """A MacroCommand whose execute and unexecute operations must complete
     without raising a RecoverableException or be rolled back.
     """
-    @staticmethod
-    def run(command_list, do, undo):
+    def run(self, command_list, do, undo):
         completed_command_list = []
         for command in command_list:
             try:
                 if hasattr(command, do):
                     getattr(command, do)()
                 else:
-                    #log
-                    pass
+                    assert hasattr(command, 'execute')
+                    warn('Non-undoable command: {command}', command=command)
             except RecoverableException as e:
-                #log
+                warn('Rolling back macro command: {command} due to exception:' +
+                     ' {exception}', command=self, exception=e)
                 for completed_command in reversed(completed_command_list):
                     if hasattr(command, undo):
                         getattr(completed_command, undo)
@@ -89,13 +97,13 @@ class RollbackMacroCommand(UndoableMacroCommand):
             completed_command_list.append(command)
 
     def execute(self):
-        RollbackMacroCommand.run(
+        self.run(
             command_list=self.command_list,
             do='execute',
             undo='unexecute')
 
     def unexecute(self):
-        RollbackMacroCommand.run(
+        self.run(
             command_list=reversed(self.command_list),
             do='unexecute',
             undo='execute')
