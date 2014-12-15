@@ -1,3 +1,5 @@
+__version__ = "0.0.0"
+
 import sys
 
 from kivy.support import install_twisted_reactor
