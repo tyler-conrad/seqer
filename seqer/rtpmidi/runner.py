@@ -57,6 +57,7 @@ def run(
             follow_standard,
             verbose))
     midi_session = RTPControl().get_session(midi_session_c)
+    midi_session.get_devices()
     midi_session.set_device_in(1)
     midi_session.set_device_out(0)
     RTPControl().start_session(midi_session_c)
