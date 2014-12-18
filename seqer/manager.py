@@ -21,7 +21,6 @@ class PatternManager(Sized):
             self.selected_track_list.remove(track)
 
     def record_event(self, event):
-        print 'pm record event'
         for track in self.selected_track_list:
             insort(track, event)
 

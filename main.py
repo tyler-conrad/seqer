@@ -29,7 +29,6 @@ from os.path import dirname
 from signal import signal
 from signal import SIGINT
 
-from kivy.config import Config
 from kivy.base import EventLoop
 from kivy.base import stopTouchApp
 from kivy.interactive import InteractiveLauncher
@@ -41,6 +40,7 @@ from rtpmidi.runner import before_shutdown
 from seqer.rtpmidi.runner import run
 from seqer.manager import PatternManager
 from seqer.sequencer import Sequencer
+from seqer.option import options
 
 
 class SeqerApp(App):
@@ -69,12 +69,10 @@ def main():
     EventLoop.unbind(on_stop=_twisted_reactor_stopper)
     EventLoop.bind(on_stop=on_stop)
 
-    # Config.set('graphics', 'fullscreen', 0)
-
     resource_add_path(dirname(abspath(__file__)) + '/assets')
 
     run(
-        peer_address='192.168.1.72',
+        peer_address=options.address,
         sending_port=44000,
         receiving_port=44000,
         latency=20,
@@ -83,9 +81,12 @@ def main():
         disable_recovery_journal=False,
         follow_standard=False,
         verbose=True)
-    # InteractiveLauncher(SeqerApp()).run()
-    SeqerApp().run()
 
+    seqer_app = SeqerApp()
+    if options.interactive:
+        InteractiveLauncher(seqer_app).run()
+    else:
+        seqer_app.run()
 
 if __name__ == '__main__':
     main()
