@@ -12,8 +12,20 @@ log.addObserver(log.PythonLoggingObserver('kivy').emit)
 from seqer import pypm_proxy
 sys.modules['pypm'] = pypm_proxy
 
+import rtpmidi.protocols.rtp.rtp_session as rtp_session
+
+
+def get_name():
+    return 'seqer'
+rtp_session.get_name = get_name
+
+
+def get_fqdn():
+    return get_name() + '@localhost'
+rtp_session.get_fqdn = get_fqdn
+
+from os.path import abspath
 from os.path import dirname
-from sys import argv
 from signal import signal
 from signal import SIGINT
 
@@ -57,12 +69,22 @@ def main():
     EventLoop.unbind(on_stop=_twisted_reactor_stopper)
     EventLoop.bind(on_stop=on_stop)
 
-    Config.set('graphics', 'fullscreen', 0)
+    # Config.set('graphics', 'fullscreen', 0)
 
-    resource_add_path(dirname(argv[0]) + '/assets')
+    resource_add_path(dirname(abspath(__file__)) + '/assets')
 
-    run(version='')
-    InteractiveLauncher(SeqerApp()).run()
+    run(
+        peer_address='192.168.1.72',
+        sending_port=44000,
+        receiving_port=44000,
+        latency=20,
+        jitter_buffer_size=10,
+        safe_keyboard=False,
+        disable_recovery_journal=False,
+        follow_standard=False,
+        verbose=True)
+    # InteractiveLauncher(SeqerApp()).run()
+    SeqerApp().run()
 
 
 if __name__ == '__main__':
