@@ -15,7 +15,7 @@ class Parser(Options):
         ['disable-recovery-journal', 'j', 'DISABLE recovery journal (journal provide note recovery when a packet is lost, so at your own risks!)'],
         ['follow-standard', 'f', 'Take care of MIDI standard (ex: omni on) in recovery journal (experimental)'],
         ['interactive', 'i', 'Launch program in interactive mode'],
-        ['show-config', 'c', True, 'Show the config popup on start']
+        ['no-config', 'c', 'Do not show the config popup on start'],
         ['verbose', 'v', 'Enables verbose output']
     ]
 
@@ -23,7 +23,7 @@ class Parser(Options):
         ['address', 'a', 'localhost', 'Specify the address of the peer (mandatory)'],
         ['send-port', 's', 44000, 'Select the sending port.', int],
         ['receive-port', 'r', 44000, 'Select the listening port', int],
-        ['latency', 'l', 20, 'Specify the latency (in ms) of the midi out device', int],
+        ['latency', 'L', 20, 'Specify the latency (in ms) of the midi out device', int],
         ['jitter-buffer', 'b', 10, 'Specify the jitter buffer size in ms', int]
     ]
 
@@ -39,5 +39,5 @@ except UsageError as ue:
         usage_error=ue
     )).split('\n'))
     exit(1)
-options = QueryDict((k, v.replace('-', '_')) for (k, v) in parser.items())
+options = QueryDict((k.replace('-', '_'), v) for (k, v) in parser.items())
 
