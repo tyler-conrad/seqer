@@ -149,11 +149,10 @@ class Input:
         for i in range(max_events):
             file_writer.RunningStatus = None
             try:
-                encoded = file_writer.encode_midi_event(io_buffer.get_nowait())
+                encoded = iter(file_writer.encode_midi_event(io_buffer.get_nowait()))
             except Empty:
                 break
-
-            timestamp = read_varlen(iter(encoded))
+            timestamp = read_varlen(encoded)
             event_list.append([[ord(num) for num in encoded], timestamp])
 
         return event_list
