@@ -24,5 +24,11 @@ class QueryDict(dict):
     def __setattr__(self, attr, value):
         self.__setitem__(attr, value)
 
+
 def map_dp(iterable):
     return [dp(i) for i in iterable]
+
+
+def print_pipe(value):
+    print value
+    return value
