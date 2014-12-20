@@ -30,19 +30,7 @@ class ScaledLabel(AlignedLabel):
             rect_height = padded_height
             rect_width = tex_width * scale_factor
 
-        x = {
-            'left': padding[0] + self.x,
-            'center': self.center_x - rect_width * 0.5,
-            'right': self.right - (rect_width + padding[2])
-        }[self.horz_align]
-
-        y = {
-            'bottom': padding[3] + self.y,
-            'center': self.center_y - rect_height * 0.5,
-            'top': self.top - (rect_height + padding[1]),
-        }[self.vert_align]
-
-        self.rect.pos = x, y
+        self.rect.pos = self.calc_rect_pos(rect_width, rect_height)
         self.rect.size = rect_width, rect_height
 
 if __name__ == '__main__':

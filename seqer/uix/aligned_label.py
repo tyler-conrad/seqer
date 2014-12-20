@@ -49,25 +49,27 @@ class AlignedLabel(Label):
         self.rect.texture = self.texture
         self.rect.size = self.texture.size
 
-    def update(self, dt=None):
-        if not self.texture:
-            return
-
+    def calc_rect_pos(self, width, height):
         padding = self.widget_padding
-        tex_width, tex_height = self.texture.size
         x = {
             'left': padding[0] + self.x,
-            'center': self.center_x - tex_width * 0.5,
-            'right': self.right - (tex_width + padding[2])
+            'center': self.center_x - width * 0.5,
+            'right': self.right - (width + padding[2])
         }[self.horz_align]
 
         y = {
             'bottom': padding[3] + self.y,
-            'center': self.center_y - tex_height * 0.5,
-            'top': self.top - (tex_height + padding[1]),
+            'center': self.center_y - height * 0.5,
+            'top': self.top - (height + padding[1]),
         }[self.vert_align]
 
-        self.rect.pos = x, y
+        return x, y
+
+    def update(self, dt=None):
+        if not self.texture:
+            return
+
+        self.rect.pos = self.calc_rect_pos(*self.texture.size)
 
 if __name__ == '__main__':
     from textwrap import dedent
