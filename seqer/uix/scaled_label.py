@@ -9,10 +9,7 @@ Builder.load_string('''
 
 
 class ScaledLabel(AlignedLabel):
-    def update(self, dt=None):
-        if not self.texture:
-            return
-
+    def calc_rect_size(self):
         padding = self.widget_padding
         padded_width = self.width - (padding[0] + padding[2])
         padded_height = self.width - (padding[1] + padding[3])
@@ -30,8 +27,31 @@ class ScaledLabel(AlignedLabel):
             rect_height = padded_height
             rect_width = tex_width * scale_factor
 
+        return rect_width, rect_height
+
+    def update(self, dt=None):
+        if not self.texture:
+            return
+
+        rect_width, rect_height = self.calc_rect_size()
         self.rect.pos = self.calc_rect_pos(rect_width, rect_height)
         self.rect.size = rect_width, rect_height
+
+
+class FontScaledLabel(ScaledLabel):
+    def update(self, dt=None):
+        if not self.texture:
+            return
+
+        rect_width, rect_height = self.calc_rect_size()
+        tex_width, tex_height = self.texture.size
+        if rect_width >= tex_width or rect_height >= tex_height:
+            rect_width = tex_width
+            rect_height = tex_height
+
+        self.rect.pos = self.calc_rect_pos(rect_width, rect_height)
+        self.rect.size = rect_width, rect_height
+
 
 if __name__ == '__main__':
     from textwrap import dedent
@@ -68,5 +88,42 @@ if __name__ == '__main__':
                     vert_align: 'bottom'
                     horz_align: 'center'
 
+            FloatLayout:
+                orientation: 'horizontal'
+
+                Widget:
+                    size_hint: None, None
+                    pos: 0.0, 0.0
+                    size: 100.0, 100.0
+
+                    canvas:
+                        Color:
+                            rgba: 1.0, 0.0, 0.0, 1.0
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                FontScaledLabel:
+                    size_hint: None, None
+                    pos: 0.0, 0.0
+                    size: 100.0, 100.0
+
+                Widget:
+                    size_hint: None, None
+                    pos: 100.0, 0.0
+                    size: 50.0, 50.0
+
+                    canvas:
+                        Color:
+                            rgba: 1.0, 0.0, 0.0, 1.0
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+
+                FontScaledLabel:
+                    size_hint: None, None
+                    pos: 100.0, 0.0
+                    size: 50.0, 50.0
     ''')))
     runTouchApp()
