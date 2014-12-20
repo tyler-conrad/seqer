@@ -14,7 +14,7 @@ Builder.load_string('''
 
 
 class AlignedLabel(Label):
-    padding = VariableListProperty([6, 6, 6, 6])
+    widget_padding = VariableListProperty([6, 6, 6, 6])
     horz_align = OptionProperty(
         'center',
         options=['left', 'center', 'right'])
@@ -32,10 +32,9 @@ class AlignedLabel(Label):
         self.bind(
             pos=self.trigger_update,
             size=self.trigger_update,
-            padding=self.trigger_update)
+            widget_padding=self.trigger_update)
 
     def on_color(self, label, color):
-        print color
         self.text_color.rgba = (self.disabled_color
             if self.disabled
             else (self.color if not self.markup else (1, 1, 1, 1)))
@@ -54,7 +53,7 @@ class AlignedLabel(Label):
         if not self.texture:
             return
 
-        padding = self.padding
+        padding = self.widget_padding
         tex_width, tex_height = self.texture.size
         x = {
             'left': padding[0] + self.x,
@@ -83,6 +82,7 @@ if __name__ == '__main__':
             text: 'aligned label'
 
         BoxLayout:
+            orientation: 'horizontal'
             AlignedLabel:
                 horz_align: 'left'
             AlignedLabel:
