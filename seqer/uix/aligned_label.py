@@ -25,22 +25,26 @@ class AlignedLabel(Label):
 
     def __init__(self, **kwargs):
         self.rect = Rectangle()
+        self.text_color = Color()
         super(AlignedLabel, self).__init__(**kwargs)
+
         self.trigger_update = Clock.create_trigger(self.update, -1)
         self.bind(
             pos=self.trigger_update,
             size=self.trigger_update,
             padding=self.trigger_update)
 
+    def on_color(self, label, color):
+        print color
+        self.text_color.rgba = (self.disabled_color
+            if self.disabled
+            else (self.color if not self.markup else (1, 1, 1, 1)))
+
     def on__build_canvas(self, label, build_canvas):
         canvas = self.canvas
         canvas.clear()
-        canvas.add(Color(
-            self.disabled_color
-            if self.disabled
-            else (self.color if not self.markup else (1, 1, 1, 1))))
+        canvas.add(self.text_color)
         canvas.add(self.rect)
-        canvas.ask_update()
 
     def on_texture(self, dispatcher, texture):
         self.rect.texture = self.texture
