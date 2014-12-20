@@ -1,13 +1,19 @@
+from kivy.lang import Builder
+
 from seqer.uix.aligned_label import AlignedLabel
+
+Builder.load_string('''
+<ScaledLabel>:
+    font_size: 72
+''')
 
 
 class ScaledLabel(AlignedLabel):
     def update(self, dt=None):
-        print 'update scaled label'
         if not self.texture:
             return
-        padding = self.widget_padding
 
+        padding = self.widget_padding
         padded_width = self.width - (padding[0] + padding[2])
         padded_height = self.width - (padding[1] + padding[3])
         padded_aspect = padded_width / padded_height
@@ -38,7 +44,6 @@ class ScaledLabel(AlignedLabel):
 
         self.rect.pos = x, y
         self.rect.size = rect_width, rect_height
-
 
 if __name__ == '__main__':
     from textwrap import dedent
