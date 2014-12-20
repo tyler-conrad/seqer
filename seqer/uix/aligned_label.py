@@ -1,4 +1,4 @@
-from kivy.properties import OptionProperty
+from kivy.properties import OptionProperty, ReferenceListProperty
 from kivy.properties import BooleanProperty
 from kivy.properties import VariableListProperty
 from kivy.graphics.context_instructions import Color
@@ -21,6 +21,7 @@ class AlignedLabel(Label):
     vert_align = OptionProperty(
         'center',
         options=['bottom', 'center', 'top'])
+    align = ReferenceListProperty(horz_align, vert_align)
     _build_canvas = BooleanProperty(False)
 
     def __init__(self, **kwargs):
@@ -90,7 +91,6 @@ if __name__ == '__main__':
             AlignedLabel:
                 horz_align: 'right'
             AlignedLabel:
-                vert_align: 'bottom'
-                horz_align: 'center'
+                align: 'left', 'bottom'
     ''')))
     runTouchApp()

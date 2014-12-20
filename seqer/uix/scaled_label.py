@@ -76,8 +76,8 @@ if __name__ == '__main__':
                 ScaledLabel:
                     horz_align: 'right'
                 ScaledLabel:
-                    vert_align: 'bottom'
-                    horz_align: 'center'
+                    align: 'left', 'bottom'
+
             BoxLayout:
                 orientation: 'vertical'
                 ScaledLabel:
@@ -119,7 +119,6 @@ if __name__ == '__main__':
                         Rectangle:
                             pos: self.pos
                             size: self.size
-
 
                 FontScaledLabel:
                     size_hint: None, None
