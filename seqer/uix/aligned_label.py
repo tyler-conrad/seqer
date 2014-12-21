@@ -1,11 +1,14 @@
-from kivy.properties import OptionProperty, ReferenceListProperty
+from kivy.properties import OptionProperty
+from kivy.properties import ReferenceListProperty
+from kivy.properties import ListProperty
 from kivy.properties import BooleanProperty
-from kivy.properties import VariableListProperty
+
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Rectangle
 from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.uix.label import Label
+
 
 Builder.load_string('''
 <AlignedLabel>:
@@ -14,7 +17,7 @@ Builder.load_string('''
 
 
 class AlignedLabel(Label):
-    widget_padding = VariableListProperty([6, 6, 6, 6])
+    widget_padding = ListProperty([0.0, 0.0, 0.0, 0.0])
     horz_align = OptionProperty(
         'center',
         options=['left', 'center', 'right'])
@@ -47,8 +50,12 @@ class AlignedLabel(Label):
         canvas.add(self.rect)
 
     def on_texture(self, dispatcher, texture):
+        if not self.texture:
+            return
+
         self.rect.texture = self.texture
         self.rect.size = self.texture.size
+        self.update()
 
     def calc_rect_pos(self, width, height):
         padding = self.widget_padding
@@ -71,6 +78,7 @@ class AlignedLabel(Label):
             return
 
         self.rect.pos = self.calc_rect_pos(*self.texture.size)
+
 
 if __name__ == '__main__':
     from textwrap import dedent

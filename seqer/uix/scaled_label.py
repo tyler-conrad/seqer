@@ -12,7 +12,7 @@ class ScaledLabel(AlignedLabel):
     def calc_rect_size(self):
         padding = self.widget_padding
         padded_width = self.width - (padding[0] + padding[2])
-        padded_height = self.width - (padding[1] + padding[3])
+        padded_height = self.height - (padding[1] + padding[3])
         padded_aspect = padded_width / padded_height
 
         tex_width, tex_height = self.texture.size
@@ -45,6 +45,7 @@ class FontScaledLabel(ScaledLabel):
 
         rect_width, rect_height = self.calc_rect_size()
         tex_width, tex_height = self.texture.size
+
         if rect_width >= tex_width or rect_height >= tex_height:
             rect_width = tex_width
             rect_height = tex_height
