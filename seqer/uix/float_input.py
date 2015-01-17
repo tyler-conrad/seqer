@@ -4,7 +4,6 @@ from kivy.properties import NumericProperty
 from kivy.properties import BooleanProperty
 from kivy.lang import Builder
 from kivy.animation import Animation
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 
 
@@ -147,6 +146,7 @@ class FloatInput(FloatLayout):
 if __name__ == '__main__':
     from kivy.base import runTouchApp
     from kivy.core.window import Window
+    from kivy.uix.boxlayout import BoxLayout
     from kivy.uix.button import Button
     layout = BoxLayout(orientation='vertical')
     layout.add_widget(FloatInput(hint_text='Float Input'))
