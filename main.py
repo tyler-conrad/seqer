@@ -69,7 +69,7 @@ def main():
     EventLoop.unbind(on_stop=_twisted_reactor_stopper)
     EventLoop.bind(on_stop=on_stop)
 
-    resource_add_path(dirname(abspath(__file__)) + '/assets')
+    resource_add_path(dirname(abspath(__file__)) + '/data')
 
     run(
         peer_address=options.address,
