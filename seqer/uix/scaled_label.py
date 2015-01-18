@@ -4,7 +4,7 @@ from seqer.uix.aligned_label import AlignedLabel
 
 Builder.load_string('''
 <ScaledLabel>:
-    font_size: 72
+    font_size: '72dp'
 ''')
 
 
