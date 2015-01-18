@@ -2,6 +2,7 @@ from kivy.properties import ListProperty
 from kivy.properties import StringProperty
 from kivy.properties import NumericProperty
 from kivy.properties import BooleanProperty
+from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
@@ -75,9 +76,12 @@ class FloatInput(FloatLayout):
 
     def __init__(self, **kwargs):
         super(FloatInput, self).__init__(**kwargs)
-        self.__dict__.update(self.ids)
         self.minimized = False
         self.label_anim = None
+        Clock.schedule_once(self.init, -1)
+
+    def init(self, dt):
+        self.__dict__.update(self.ids)
         self.input.bind(focus=self.setter('focus'))
         self.input.bind(pos=self.update_label)
         self.input.bind(size=self.update_label)
@@ -90,10 +94,11 @@ class FloatInput(FloatLayout):
 
     def label_maximized_attrs(self):
         return {
+            'x': self.x,
             'y': self.input.y,
             'size': self.input.size}  # set height only?
 
-    def update_label(self, input, pos):
+    def update_label(self, input=None, pos=None):
         if self.minimized:
             attr_dict = self.label_minimized_attrs()
         else:
@@ -149,7 +154,10 @@ if __name__ == '__main__':
     from kivy.uix.boxlayout import BoxLayout
     from kivy.uix.button import Button
     layout = BoxLayout(orientation='vertical')
-    layout.add_widget(FloatInput(hint_text='Float Input'))
+    sublayout = BoxLayout(orientation='horizontal')
+    sublayout.add_widget(Button())
+    sublayout.add_widget(FloatInput(hint_text='Float Input'))
+    layout.add_widget(sublayout)
     layout.add_widget(Button())
     layout.add_widget(Button())
     layout.add_widget(Button())
