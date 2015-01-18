@@ -45,6 +45,7 @@ Builder.load_string('''
         font_size: self.height - self.height * 0.20501139
         multiline: False
         padding: 0.0, 0.0, 0.0, 0.0
+        foreground_color: root.input_text_color
 
     FloatLabel:
         id: label
@@ -66,6 +67,7 @@ class FloatInput(FloatLayout):
         'atlas://data/images/defaulttheme/textinput_active')
     background_disabled_active = StringProperty(
         'atlas://data/images/defaulttheme/textinput_disabled_active')
+    input_text_color = ListProperty([0, 0, 0, 1])
     background_color = ListProperty([1.0, 1.0, 1.0, 1.0])
     minimized_hint_text_color = ListProperty([0.4, 0.4, 0.4, 1.0])
     hint_text_color = ListProperty([0.8, 0.8, 0.8, 1.0])
