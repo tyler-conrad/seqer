@@ -6,15 +6,6 @@ Builder.load_string('''
 #:import FloatInput seqer.uix.float_input.FloatInput
 #:import FieldSeparator seqer.uix.field_separator.FieldSeparator
 
-<ConfigFloatInput@FloatInput>:
-    input_text_color: 0.6, 0.6, 0.6, 1.0
-    background_color: 0.0, 0.0, 0.0, 0.0
-    hint_text_color: 0.2, 0.2, 0.2, 1.0
-    minimized_hint_text_color: 0.4, 0.4, 0.4, 1.0
-
-<ConfigFieldSeparator@FieldSeparator>:
-    color: 0.4, 0.4, 0.4, 1.0
-
 <ConfigModal>:
     size_hint: 0.8, 0.4
     auto_dismiss: False
@@ -26,10 +17,10 @@ Builder.load_string('''
         BoxLayout:
             orientation: 'vertical'
 
-            ConfigFloatInput:
+            FloatInput:
                 hint_text: 'Peer Address'
 
-            ConfigFieldSeparator:
+            FieldSeparator:
                 orientation: 'horizontal'
                 size_hint: 1.0, None
                 size: 0.0, 1.0
@@ -37,15 +28,15 @@ Builder.load_string('''
         BoxLayout:
             orientation: 'horizontal'
 
-            ConfigFloatInput:
+            FloatInput:
                 hint_text: 'Send Port'
 
-            ConfigFieldSeparator:
+            FieldSeparator:
                 orientation: 'vertical'
                 size_hint: None, 1.0
-                size: '50dp', 0.0
+                size: 1.0, 0.0
 
-            ConfigFloatInput:
+            FloatInput:
                 hint_text: 'Receive Port'
 
         BoxLayout:
@@ -58,7 +49,6 @@ Builder.load_string('''
 
 class ConfigModal(ModalView):
     pass
-
 
 if __name__ == '__main__':
     from kivy.base import runTouchApp

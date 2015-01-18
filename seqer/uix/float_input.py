@@ -10,6 +10,7 @@ from kivy.uix.floatlayout import FloatLayout
 
 Builder.load_string('''
 #:import FontScaledLabel seqer.uix.scaled_label.FontScaledLabel
+#:import dp kivy.metrics.dp
 
 <FloatLabel@FontScaledLabel>:
 
@@ -44,7 +45,7 @@ Builder.load_string('''
         size_hint: 1.0, 0.9
         font_size: self.height - self.height * 0.20501139
         multiline: False
-        padding: 0.0, 0.0, 0.0, 0.0
+        padding: dp(root.left_padding), 0.0, 0.0, 0.0
         foreground_color: root.input_text_color
 
     FloatLabel:
@@ -54,6 +55,7 @@ Builder.load_string('''
         text: root.hint_text
         horz_align: 'left'
         vert_align: 'top'
+        widget_padding: dp(root.left_padding), 0.0, 0.0, 0.0
 ''')
 
 
@@ -67,10 +69,11 @@ class FloatInput(FloatLayout):
         'atlas://data/images/defaulttheme/textinput_active')
     background_disabled_active = StringProperty(
         'atlas://data/images/defaulttheme/textinput_disabled_active')
-    input_text_color = ListProperty([0, 0, 0, 1])
-    background_color = ListProperty([1.0, 1.0, 1.0, 1.0])
+    input_text_color = ListProperty([0.6, 0.6, 0.6, 1.0])
+    background_color = ListProperty([0.0, 0.0, 0.0, 0.0])
     minimized_hint_text_color = ListProperty([0.4, 0.4, 0.4, 1.0])
-    hint_text_color = ListProperty([0.8, 0.8, 0.8, 1.0])
+    hint_text_color = ListProperty([0.2, 0.2, 0.2, 1.0])
+    left_padding = NumericProperty(20.0)
     focus = BooleanProperty(False)
     minimized_label_scale = NumericProperty(0.15)
     minimized_pad = NumericProperty(6.0)

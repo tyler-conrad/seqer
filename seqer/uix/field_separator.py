@@ -16,7 +16,7 @@ Builder.load_string('''
 
 class FieldSeparator(Widget):
     orientation = StringProperty('horizontal')
-    color = ListProperty([1.0, 1.0, 1.0, 1.0])
+    color = ListProperty([0.4, 0.4, 0.4, 1.0])
 
 if __name__ == '__main__':
     from kivy.base import runTouchApp
