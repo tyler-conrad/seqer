@@ -37,17 +37,19 @@ from kivy.resources import resource_add_path
 
 from rtpmidi.runner import before_shutdown
 
-from seqer.rtpmidi.runner import run
 from seqer.manager import PatternManager
 from seqer.sequencer import Sequencer
 from seqer.option import options
+from seqer.command.queue import command_queue
+from seqer.command.init_rtpmidi import InitRTPMIDI
 
 
 class SeqerApp(App):
     def on_start(self):
-        sequencer = Sequencer()
-        sequencer.set_pattern_manager(PatternManager())
-        sequencer.record()
+        # sequencer = Sequencer()
+        # sequencer.set_pattern_manager(PatternManager())
+        # sequencer.record()
+        command_queue.do(InitRTPMIDI())
 
 
 def on_stop(event_loop):
@@ -70,17 +72,6 @@ def main():
     EventLoop.bind(on_stop=on_stop)
 
     resource_add_path(dirname(abspath(__file__)) + '/data')
-
-    run(
-        peer_address=options.address,
-        sending_port=44000,
-        receiving_port=44000,
-        latency=20,
-        jitter_buffer_size=10,
-        safe_keyboard=False,
-        disable_recovery_journal=False,
-        follow_standard=False,
-        verbose=True)
 
     seqer_app = SeqerApp()
     if options.interactive:

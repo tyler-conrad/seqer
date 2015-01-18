@@ -46,6 +46,7 @@ class CommandQueue(object):
 
             return
 
+command_queue = CommandQueue()
 
 if __name__ == '__main__':
     from seqer.command.base import UndoableCommand

@@ -36,15 +36,6 @@ def run(
         disable_recovery_journal=False,
         follow_standard=False,
         verbose=False):
-
-        # if utils.check_ip(peer_address):
-        #     peer_address = peer_address
-        # else:
-        #     try:
-        #         peer_address = socket.gethostbyname(peer_address)
-        #     except socket.gaierror, e:
-        #         print "socket error: %s" % (str(e))
-        #         print "Wrong ip address format: ", peer_address
     midi_session_c = RTPControl().add_session(
         MidiSession(
             peer_address,
