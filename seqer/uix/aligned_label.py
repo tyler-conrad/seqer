@@ -55,7 +55,7 @@ class AlignedLabel(Label):
 
         self.rect.texture = self.texture
         self.rect.size = self.texture.size
-        self.update()
+        self.trigger_update()
 
     def calc_rect_pos(self, width, height):
         padding = self.widget_padding

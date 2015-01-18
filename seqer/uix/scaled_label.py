@@ -13,6 +13,8 @@ class ScaledLabel(AlignedLabel):
         padding = self.widget_padding
         padded_width = self.width - (padding[0] + padding[2])
         padded_height = self.height - (padding[1] + padding[3])
+        if not padded_height:
+            return 0.0, 0.0
         padded_aspect = padded_width / padded_height
 
         tex_width, tex_height = self.texture.size
