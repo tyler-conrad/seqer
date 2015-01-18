@@ -6,6 +6,7 @@ from collections import MutableSequence
 
 from seqer.logger import warn
 
+
 class Command(object):
     """Abstract base class for all command objects."""
     __metaclass__ = ABCMeta
