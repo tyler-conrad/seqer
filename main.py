@@ -32,24 +32,12 @@ from signal import SIGINT
 from kivy.base import EventLoop
 from kivy.base import stopTouchApp
 from kivy.interactive import InteractiveLauncher
-from kivy.app import App
 from kivy.resources import resource_add_path
 
 from rtpmidi.runner import before_shutdown
 
-from seqer.manager import PatternManager
-from seqer.sequencer import Sequencer
 from seqer.option import options
-from seqer.command.queue import command_queue
-from seqer.command.init_rtpmidi import InitRTPMIDI
-
-
-class SeqerApp(App):
-    def on_start(self):
-        # sequencer = Sequencer()
-        # sequencer.set_pattern_manager(PatternManager())
-        # sequencer.record()
-        command_queue.do(InitRTPMIDI())
+from seqer.app import SeqerApp
 
 
 def on_stop(event_loop):

@@ -7,6 +7,7 @@ Builder.load_string('''
 
 <StartModal>:
     size_hint: 0.8, 0.4
+    auto_dismiss: False
 
     BoxLayout:
         orientation: 'vertical'

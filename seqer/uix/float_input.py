@@ -50,11 +50,12 @@ Builder.load_string('''
         foreground_color: root.input_text_color
         write_tab: False
         input_filter: root.input_filter
+        text: root.text
 
     FloatLabel:
         id: label
         size_hint: None, None
-        color: root.hint_text_color
+        # color: root.hint_text_color
         text: root.hint_text
         horz_align: 'left'
         vert_align: 'top'
@@ -81,16 +82,21 @@ class FloatInput(FloatLayout):
     focus = BooleanProperty(False)
     minimized_label_scale = NumericProperty(0.15)
     minimized_pad = NumericProperty(6.0)
-    hint_text = StringProperty()
+    text = StringProperty('')
+    hint_text = StringProperty('')
 
     def __init__(self, **kwargs):
         super(FloatInput, self).__init__(**kwargs)
-        self.minimized = False
-        self.label_anim = None
         Clock.schedule_once(self.init, -1)
 
     def init(self, dt):
         self.__dict__.update(self.ids)
+        self.minimized = bool(self.input.text)
+        self.label_anim = None
+        self.label.color = (self.minimized_hint_text_color
+            if self.minimized
+            else self.hint_text_color)
+
         self.input.bind(focus=self.setter('focus'))
         self.input.bind(pos=self.update_label)
         self.input.bind(size=self.update_label)

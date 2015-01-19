@@ -2,6 +2,7 @@ from kivy.lang import Builder
 from kivy.uix.modalview import ModalView
 
 Builder.load_string('''
+#:import options seqer.option.options
 #:import PadLayout seqer.uix.pad_layout.PadLayout
 #:import FloatInput seqer.uix.float_input.FloatInput
 #:import FieldSeparator seqer.uix.field_separator.FieldSeparator
@@ -16,6 +17,7 @@ Builder.load_string('''
 
         FloatInput:
             hint_text: 'Peer Address'
+            text: options['address']
 
         FieldSeparator:
             orientation: 'horizontal'
@@ -28,6 +30,7 @@ Builder.load_string('''
             FloatInput:
                 hint_text: 'Send Port'
                 input_filter: 'int'
+                text: str(options['send_port'])
 
             FieldSeparator:
                 orientation: 'vertical'
@@ -37,6 +40,7 @@ Builder.load_string('''
             FloatInput:
                 hint_text: 'Receive Port'
                 input_filter: 'int'
+                text: str(options['receive_port'])
 
         FieldSeparator:
             orientation: 'horizontal'
@@ -49,6 +53,7 @@ Builder.load_string('''
             FloatInput:
                 hint_text: 'Latency'
                 input_filter: 'int'
+                text: str(options['latency'])
 
             FieldSeparator:
                 orientation: 'vertical'
@@ -58,6 +63,7 @@ Builder.load_string('''
             FloatInput:
                 hint_text: 'Jitter Buffer Size'
                 input_filter: 'int'
+                text: str(options['jitter_buffer'])
 
         BoxLayout:
             padding: 0.0, '50dp', 0.0, 0.0
@@ -69,6 +75,8 @@ Builder.load_string('''
 
 class ConfigModal(ModalView):
     pass
+    # def __init__(self, **kwargs):
+    #     super(ConfigModal, self).__init__(**kwargs)
 
 if __name__ == '__main__':
     from kivy.base import runTouchApp
