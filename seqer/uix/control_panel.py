@@ -11,7 +11,7 @@ from kivy.uix.behaviors import ToggleButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.togglebutton import Button
 
-from seqer.utils import QueryDict
+from seqer.util.misc import QueryDict
 
 Builder.load_string('''
 <ControlPanel>:

@@ -6,8 +6,7 @@ from sys import exit
 
 from twisted.python.usage import Options
 from twisted.python.usage import UsageError
-
-from seqer.utils import QueryDict
+from seqer.util.misc import QueryDict
 
 
 class Parser(Options):
@@ -24,7 +23,8 @@ class Parser(Options):
         ['send-port', 's', 44000, 'Select the sending port.', int],
         ['receive-port', 'r', 44000, 'Select the listening port', int],
         ['latency', 'L', 20, 'Specify the latency (in ms) of the midi out device', int],
-        ['jitter-buffer', 'b', 10, 'Specify the jitter buffer size in ms', int]
+        ['jitter-buffer', 'b', 10, 'Specify the jitter buffer size in ms', int],
+        ['script', 'c', None, 'Command script']
     ]
 
 parser = Parser()
