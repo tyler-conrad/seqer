@@ -7,29 +7,27 @@ Builder.load_string('''
 #:import FieldSeparator seqer.uix.field_separator.FieldSeparator
 
 <ConfigModal>:
-    size_hint: 0.8, 0.4
+    size_hint: 0.8, 0.6
     auto_dismiss: False
 
     BoxLayout:
         orientation: 'vertical'
         padding: '50dp'
 
-        BoxLayout:
-            orientation: 'vertical'
+        FloatInput:
+            hint_text: 'Peer Address'
 
-            FloatInput:
-                hint_text: 'Peer Address'
-
-            FieldSeparator:
-                orientation: 'horizontal'
-                size_hint: 1.0, None
-                size: 0.0, 1.0
+        FieldSeparator:
+            orientation: 'horizontal'
+            size_hint: 1.0, None
+            size: 0.0, 1.0
 
         BoxLayout:
             orientation: 'horizontal'
 
             FloatInput:
                 hint_text: 'Send Port'
+                input_filter: 'int'
 
             FieldSeparator:
                 orientation: 'vertical'
@@ -38,6 +36,28 @@ Builder.load_string('''
 
             FloatInput:
                 hint_text: 'Receive Port'
+                input_filter: 'int'
+
+        FieldSeparator:
+            orientation: 'horizontal'
+            size_hint: 1.0, None
+            size: 0.0, 1.0
+
+        BoxLayout:
+            orientation: 'horizontal'
+
+            FloatInput:
+                hint_text: 'Latency'
+                input_filter: 'int'
+
+            FieldSeparator:
+                orientation: 'vertical'
+                size_hint: None, 1.0
+                size: 1.0, 0.0
+
+            FloatInput:
+                hint_text: 'Jitter Buffer Size'
+                input_filter: 'int'
 
         BoxLayout:
             padding: 0.0, '50dp', 0.0, 0.0
