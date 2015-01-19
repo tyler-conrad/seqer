@@ -55,7 +55,7 @@ Builder.load_string('''
     FloatLabel:
         id: label
         size_hint: None, None
-        # color: root.hint_text_color
+        color: root.hint_text_color
         text: root.hint_text
         horz_align: 'left'
         vert_align: 'top'
@@ -87,20 +87,20 @@ class FloatInput(FloatLayout):
 
     def __init__(self, **kwargs):
         super(FloatInput, self).__init__(**kwargs)
+        self.minimized = False
+        self.label_anim = None
         Clock.schedule_once(self.init, -1)
 
     def init(self, dt):
         self.__dict__.update(self.ids)
-        self.minimized = bool(self.input.text)
-        self.label_anim = None
-        self.label.color = (self.minimized_hint_text_color
-            if self.minimized
-            else self.hint_text_color)
-
         self.input.bind(focus=self.setter('focus'))
         self.input.bind(pos=self.update_label)
         self.input.bind(size=self.update_label)
         self.input.bind(font_size=self.update_label_font_size)
+
+        def init_focus(dt):
+            self.on_focus(self.input, True)
+        Clock.create_trigger(init_focus, 0)()
 
     def label_minimized_attrs(self):
         return {
@@ -134,6 +134,10 @@ class FloatInput(FloatLayout):
         if self.minimized:
             for attr, val in self.label_minimized_attrs().items():
                 setattr(self.label, attr, val)
+
+    def on_input_text(self, float_input, text):
+        print 'on input text'
+        self.on_focus(float_input, True)
 
     def on_focus(self, float_input, focus):
         if (not self.minimized) and focus:
