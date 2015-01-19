@@ -1,4 +1,5 @@
 from kivy.properties import ListProperty
+from kivy.properties import ObjectProperty
 from kivy.properties import StringProperty
 from kivy.properties import NumericProperty
 from kivy.properties import BooleanProperty
@@ -47,6 +48,8 @@ Builder.load_string('''
         multiline: False
         padding: dp(root.left_padding), 0.0, 0.0, 0.0
         foreground_color: root.input_text_color
+        write_tab: False
+        input_filter: root.input_filter
 
     FloatLabel:
         id: label
@@ -74,6 +77,7 @@ class FloatInput(FloatLayout):
     minimized_hint_text_color = ListProperty([0.4, 0.4, 0.4, 1.0])
     hint_text_color = ListProperty([0.2, 0.2, 0.2, 1.0])
     left_padding = NumericProperty(20.0)
+    input_filter = ObjectProperty(None, allownone=True)
     focus = BooleanProperty(False)
     minimized_label_scale = NumericProperty(0.15)
     minimized_pad = NumericProperty(6.0)
