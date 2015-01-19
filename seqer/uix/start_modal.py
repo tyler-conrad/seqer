@@ -1,5 +1,6 @@
 from kivy.lang import Builder
 from kivy.uix.modalview import ModalView
+from seqer.uix.config_modal import ConfigModal
 
 Builder.load_string('''
 #:import ScaledButton seqer.uix.scaled_button.ScaledButton
@@ -13,6 +14,7 @@ Builder.load_string('''
 
         ScaledButton:
             text: 'Setup'
+            on_press: root.setup()
 
         ScaledButton:
             text: 'Load Script'
@@ -21,7 +23,9 @@ Builder.load_string('''
 
 
 class StartModal(ModalView):
-    pass
+    def setup(self):
+        ConfigModal().open()
+        self.dismiss()
 
 if __name__ == '__main__':
     from kivy.base import runTouchApp
