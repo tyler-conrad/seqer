@@ -135,10 +135,6 @@ class FloatInput(FloatLayout):
             for attr, val in self.label_minimized_attrs().items():
                 setattr(self.label, attr, val)
 
-    def on_input_text(self, float_input, text):
-        print 'on input text'
-        self.on_focus(float_input, True)
-
     def on_focus(self, float_input, focus):
         if (not self.minimized) and focus:
             self.minimized = True
