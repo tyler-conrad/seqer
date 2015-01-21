@@ -10,7 +10,6 @@ from kivy.uix.floatlayout import FloatLayout
 
 from seqer.util.debounce import debounce
 
-
 Builder.load_string('''
 #:import FontScaledLabel seqer.uix.scaled_label.FontScaledLabel
 #:import dp kivy.metrics.dp
@@ -107,7 +106,7 @@ class FloatInput(FloatLayout):
         def init_focus(dt):
             self.on_focus(self.input, True)
         if self.text:
-            Clock.create_trigger(init_focus, -1)()
+            Clock.create_trigger(init_focus, 0)()
 
     def label_minimized_attrs(self):
         return {
