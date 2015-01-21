@@ -146,9 +146,9 @@ class FloatInput(FloatLayout):
             return self.invalid_hint_text_color
 
         if self.minimized:
-            return self.hint_text_color
+            return self.minimized_hint_text_color
 
-        return self.minimized_hint_text_color
+        return self.hint_text_color
 
     def on_is_valid(self, float_input, is_valid):
         Animation(
@@ -161,20 +161,20 @@ class FloatInput(FloatLayout):
 
     def on_focus(self, float_input, focus):
         if (not self.minimized) and focus:
+            self.minimized = True
             anim_kwargs = {
                 # 'top': self.top - self.minimized_pad,
                 # 'width': self.width * self.minimized_label_scale,
                 'height': self.input.height * self.minimized_label_scale,
                 'color': self.get_hint_text_color()}
             anim_kwargs.update(**self.label_minimized_attrs())
-            self.minimized = True
         elif self.minimized and not self.input.text and not focus:
+            self.minimized = False
             anim_kwargs = {
                 # 'y': self.y,
                 # 'size': self.size,
                 'color': self.get_hint_text_color()}
             anim_kwargs.update(**self.label_maximized_attrs())
-            self.minimized = False
         else:
             return
 
