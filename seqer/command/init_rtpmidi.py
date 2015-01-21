@@ -1,21 +1,5 @@
-import socket
-
-from rtpmidi.utils import check_ip
-
 from seqer.command.base import Command
 from seqer.rtpmidi.runner import run
-from seqer.logger import warn
-
-
-def ip_from_host_or_ip(host_or_ip):
-    if check_ip(host_or_ip):
-        return host_or_ip
-    try:
-        ip = socket.gethostbyname(host_or_ip)
-    except socket.gaierror as e:
-        warn('Invalid host or ip address: {host_or_ip}', host_or_ip=host_or_ip)
-        raise e
-    return ip
 
 
 class InitRTPMIDI(Command):
