@@ -8,6 +8,8 @@ from kivy.lang import Builder
 from kivy.animation import Animation
 from kivy.uix.floatlayout import FloatLayout
 
+from seqer.util.debounce import debounce
+
 
 Builder.load_string('''
 #:import FontScaledLabel seqer.uix.scaled_label.FontScaledLabel
@@ -76,6 +78,7 @@ class FloatInput(FloatLayout):
     input_text_color = ListProperty([0.6, 0.6, 0.6, 1.0])
     background_color = ListProperty([0.0, 0.0, 0.0, 0.0])
     minimized_hint_text_color = ListProperty([0.4, 0.4, 0.4, 1.0])
+    invalid_hint_text_color = ListProperty([0.8, 0.2, 0.2, 1.0])
     hint_text_color = ListProperty([0.2, 0.2, 0.2, 1.0])
     left_padding = NumericProperty(20.0)
     input_filter = ObjectProperty(None, allownone=True)
@@ -84,6 +87,8 @@ class FloatInput(FloatLayout):
     minimized_pad = NumericProperty(6.0)
     text = StringProperty('')
     hint_text = StringProperty('')
+    validator = ObjectProperty(lambda text: True)
+    is_valid = BooleanProperty(True)
 
     def __init__(self, **kwargs):
         super(FloatInput, self).__init__(**kwargs)
@@ -97,10 +102,12 @@ class FloatInput(FloatLayout):
         self.input.bind(pos=self.update_label)
         self.input.bind(size=self.update_label)
         self.input.bind(font_size=self.update_label_font_size)
+        self.input.bind(text=debounce(self.validate))
 
         def init_focus(dt):
             self.on_focus(self.input, True)
-        Clock.create_trigger(init_focus, 0)()
+        if self.text:
+            Clock.create_trigger(init_focus, -1)()
 
     def label_minimized_attrs(self):
         return {
@@ -135,22 +142,40 @@ class FloatInput(FloatLayout):
             for attr, val in self.label_minimized_attrs().items():
                 setattr(self.label, attr, val)
 
+    def get_hint_text_color(self):
+        if not self.is_valid:
+            return self.invalid_hint_text_color
+
+        if self.minimized:
+            return self.hint_text_color
+
+        return self.minimized_hint_text_color
+
+    def on_is_valid(self, float_input, is_valid):
+        Animation(
+            duration=0.2,
+            color=self.get_hint_text_color()
+        ).start(self.label)
+
+    def validate(self, float_input, text):
+        self.is_valid = self.validator(text)
+
     def on_focus(self, float_input, focus):
         if (not self.minimized) and focus:
-            self.minimized = True
             anim_kwargs = {
                 # 'top': self.top - self.minimized_pad,
                 # 'width': self.width * self.minimized_label_scale,
                 'height': self.input.height * self.minimized_label_scale,
-                'color': self.minimized_hint_text_color}
+                'color': self.get_hint_text_color()}
             anim_kwargs.update(**self.label_minimized_attrs())
+            self.minimized = True
         elif self.minimized and not self.input.text and not focus:
-            self.minimized = False
             anim_kwargs = {
                 # 'y': self.y,
                 # 'size': self.size,
-                'color': self.hint_text_color}
+                'color': self.get_hint_text_color()}
             anim_kwargs.update(**self.label_maximized_attrs())
+            self.minimized = False
         else:
             return
 
@@ -171,7 +196,9 @@ if __name__ == '__main__':
     layout = BoxLayout(orientation='vertical')
     sublayout = BoxLayout(orientation='horizontal')
     sublayout.add_widget(Button())
-    sublayout.add_widget(FloatInput(hint_text='Float Input'))
+    sublayout.add_widget(FloatInput(
+        hint_text='Float Input',
+        validator=lambda x: x == 'asdf'))
     layout.add_widget(sublayout)
     layout.add_widget(Button())
     layout.add_widget(Button())
