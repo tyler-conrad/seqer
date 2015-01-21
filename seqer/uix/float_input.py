@@ -156,8 +156,8 @@ class FloatInput(FloatLayout):
             color=self.get_hint_text_color()
         ).start(self.label)
 
-    def validate(self, float_input, text):
-        self.is_valid = self.validator(text)
+    def validate(self, float_input=None, text=None):
+        self.is_valid = self.validator(self.input.text)
 
     def on_focus(self, float_input, focus):
         if (not self.minimized) and focus:
