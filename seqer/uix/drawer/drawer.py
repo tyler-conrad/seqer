@@ -76,42 +76,42 @@ Builder.load_string('''
     _side_panel: sidepanel
     _main_panel: mainpanel
     _join_image: joinimage
-    side_panel_width: min(dp(250), 0.5*self.width)
+    # side_panel_width: min(dp(250), 0.5*self.width)
     SidePanel:
         id: sidepanel
 
     MainPanel:
         id: mainpanel
 
-    Widget:
-        id: joinimage
-    # Image:
+    # Widget:
     #     id: joinimage
-    #     opacity: min(sidepanel.opacity, 0 if root._anim_progress < 0.00001 \
-    #              else min(root._anim_progress*40,1))
-    #     source: root._choose_image(root._main_above, root.separator_image)
-    #     mipmap: False
-    #
-    #     width: root.separator_image_width \
-    #         if root.orientation == 'horizontal' \
-    #         else root.width
-    #
-    #     height: root._side_panel.height \
-    #         if root.orientation == 'horizontal' \
-    #         else root.separator_image_width
-    #
-    #     x: ((mainpanel.x - self.width + 1) if root._main_above \
-    #        else (sidepanel.x + sidepanel.width - 1)) \
-    #        if root.orientation == 'horizontal' \
-    #        else root.x
-    #
-    #     y: (((mainpanel.y + mainpanel.height) - self.height + 1) if root._main_above \
-    #        else ((sidepanel.y + 1))) \
-    #        if root.orientation == 'vertical' \
-    #        else root.y
-    #
-    #     allow_stretch: True
-    #     keep_ratio: False
+    Image:
+        id: joinimage
+        opacity: min(sidepanel.opacity, 0 if root._anim_progress < 0.00001 \
+                 else min(root._anim_progress*40,1))
+        source: root._choose_image(root._main_above, root.separator_image)
+        mipmap: False
+
+        width: root.separator_image_width \
+            if root.orientation == 'horizontal' \
+            else root.width
+
+        height: root._side_panel.height \
+            if root.orientation == 'horizontal' \
+            else root.separator_image_width
+
+        x: ((mainpanel.x - self.width + 1) if root._main_above \
+           else (sidepanel.x + sidepanel.width - 1)) \
+           if root.orientation == 'horizontal' \
+           else root.x
+
+        y: (((mainpanel.y + mainpanel.height) - self.height + 1) if root._main_above \
+           else ((sidepanel.y + 1))) \
+           if root.orientation == 'vertical' \
+           else root.y
+
+        allow_stretch: True
+        keep_ratio: False
 ''')
 
 
@@ -125,6 +125,9 @@ class MainPanel(BoxLayout):
 
 class Drawer(NavigationDrawer):
     orientation = StringProperty('vertical')
+
+    def on_side_panel_width(self, asdf, width):
+        print width
 
     def on_touch_down(self, touch):
         col_self = self.collide_point(*touch.pos)

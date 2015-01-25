@@ -1,20 +1,20 @@
+#:import Drawer seqer.uix.drawer.drawer.Drawer
 #:import ControlPanel seqer.uix.control_panel.ControlPanel
 #:import BPMGauge seqer.uix.bpm_gauge.BPMGauge
 #:import QuantizerPanel seqer.uix.quantizer_panel.QuantizerPanel
 
-
 <Label>:
     color: 0.8, 0.8, 0.8, 1.0
 
-BoxLayout:
+Drawer:
     orientation: 'vertical'
+    side_panel_width: '100dp'
+
     BoxLayout:
         orientation: 'horizontal'
-        size_hint_y: 0.05
 
         ControlPanel:
         BPMGauge:
         QuantizerPanel:
 
     Button:
-        size_hint_y: 0.95
