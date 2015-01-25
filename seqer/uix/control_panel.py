@@ -79,7 +79,7 @@ class ControlButton(Button):
 
     def update(self, dt):
         self.scale.y = self.scale.x = (
-            min(self.width, self.height) / self.svg.width)
+            min(self.width, self.height) / self.svg.width * 0.5)
         self.translate.x = self.center_x - self.svg.width * self.scale.x / 2.0
         self.translate.y = self.center_y - self.svg.height * self.scale.y / 2.0
 
