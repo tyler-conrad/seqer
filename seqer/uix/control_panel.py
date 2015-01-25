@@ -5,6 +5,7 @@ from kivy.resources import resource_find
 from kivy.graphics.svg import Svg
 from kivy.graphics.instructions import InstructionGroup
 from kivy.graphics.context_instructions import Translate
+from kivy.graphics.context_instructions import Scale
 from kivy.graphics.context_instructions import PushMatrix
 from kivy.graphics.context_instructions import PopMatrix
 from kivy.uix.behaviors import ToggleButtonBehavior
@@ -41,6 +42,7 @@ class ControlButton(Button):
     def __init__(self, **kwargs):
         super(ControlButton, self).__init__(**kwargs)
         self.translate = Translate(0.0, 0.0)
+        self.scale = Scale(1.0, 1.0, 1.0)
         self.instruction_group = self._build_group()
         self.canvas.after.add(self.instruction_group)
 
@@ -53,6 +55,7 @@ class ControlButton(Button):
         for instruction in [
                 PushMatrix(),
                 self.translate,
+                self.scale,
                 PopMatrix()]:
             group.add(instruction)
         return group
@@ -61,7 +64,7 @@ class ControlButton(Button):
         if self.svg in self.instruction_group.children:
             self.instruction_group.remove(self.svg)
         self.svg = svg
-        self.instruction_group.insert(2, self.svg)
+        self.instruction_group.insert(3, self.svg)
         self.trigger_update()
 
     def on_normal_filename(self, instance, filename):
@@ -75,8 +78,10 @@ class ControlButton(Button):
         self.trigger_update()
 
     def update(self, dt):
-        self.translate.x = self.center_x - self.svg.width / 2.0
-        self.translate.y = self.center_y - self.svg.height / 2.0
+        self.scale.y = self.scale.x = (
+            min(self.width, self.height) / self.svg.width)
+        self.translate.x = self.center_x - self.svg.width * self.scale.x / 2.0
+        self.translate.y = self.center_y - self.svg.height * self.scale.y / 2.0
 
 
 class ControlToggleButton(ToggleButtonBehavior, ControlButton):
