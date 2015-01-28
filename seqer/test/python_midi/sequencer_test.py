@@ -3,6 +3,7 @@ from itertools import chain
 import pytest
 
 from midi import SetTempoEvent
+from midi import MetaEvent
 
 from seqer.python_midi.containers import Pattern
 from seqer.python_midi.containers import Track
@@ -33,4 +34,8 @@ def test_event_stream_iterator(mary_event_stream):
         window=20,
         start_tick=0,
         end_tick=list(mary_event_stream.merged())[-1].tick + 1)
-    assert list(chain.from_iterable(esi)) == sorted(list(mary_event_stream.merged()))
+
+    assert list(chain.from_iterable(esi)) == sorted([
+        event for event in list(mary_event_stream.merged())
+        if not isinstance(event, MetaEvent)])
+

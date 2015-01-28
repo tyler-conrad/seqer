@@ -42,16 +42,26 @@ def test_event_stream_tempomap(
                     filter(lambda event: isinstance(event, SetTempoEvent),
                            sorted(list(mary_track_one) + list(mary_track_two)))]
 
-    assert mary_event_stream.tempomap()[:] == new_tempomap
+    assert mary_event_stream.tempomap() == new_tempomap
 
 
 def test_event_stream_slice(mary_event_stream):
     event_list = sorted(list(mary_event_stream.merged()))
     beg = event_list[10]
     end = event_list[15]
-    assert mary_event_stream[beg.tick:end.tick] == event_list[10:15]
-    assert mary_event_stream[beg.tick:end.tick + 1] == event_list[10:16]
-    assert mary_event_stream[beg.tick + 1:end.tick] == event_list[11:15]
+
+    def filter_out_tempo_events(event_list):
+        return [event for event in event_list
+                if not isinstance(event, SetTempoEvent)]
+
+    assert mary_event_stream[beg.tick:end.tick] == filter_out_tempo_events(
+        event_list[10:15])
+
+    assert mary_event_stream[beg.tick:end.tick + 1] == filter_out_tempo_events(
+        event_list[10:16])
+
+    assert mary_event_stream[beg.tick + 1:end.tick] == filter_out_tempo_events(
+        event_list[11:15])
 
     # todo more tests for patterns with runs of events with the same tick value
 

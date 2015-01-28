@@ -29,15 +29,17 @@ class EventStream(object):
         return tempomap
 
     def merged(self):
-        return [event for event in chain.from_iterable(self.pattern)
-                if not isinstance(event, MetaEvent)]
+        return chain.from_iterable(self.pattern)
 
     def __getitem__(self, index_or_slice):
         if not isinstance(index_or_slice, slice):
             raise NotImplementedError(
                 'EventStream only supports slice operations')
 
-        event_list = sorted(self.merged())
+        event_list = sorted([
+            event for event in self.merged()
+            if not isinstance(event, MetaEvent)])
+
         left = bisect_left(event_list, Event(tick=index_or_slice.start))
         right = bisect_left(event_list, Event(tick=index_or_slice.stop))
         return event_list[left:right]
