@@ -1,9 +1,73 @@
 from pprint import pformat
+from itertools import chain
+
+from midi import SetTempoEvent
 
 from kivy.event import EventDispatcher
 from kivy.properties import ListProperty
+from kivy.properties import NumericProperty
 
+from seqer.
 from seqer.collections import MutableSequence
+
+
+class EventStream(EventDispatcher):
+    # in units of ticks
+    cursor = NumericProperty(0)
+    start_of_track = NumericProperty(0)
+    end_of_track = NumericProperty(0)
+
+    def __init__(self, pattern): # set end_of_track
+        self.pattern = pattern
+        self.resolution = pattern.resolution
+        self.tempomap = TempoMap(self)
+        self.refresh_tempomap()
+
+        for track in pattern:
+            track.bind(events=self.on_events)
+        pattern.bind(tracks=self.on_tracks)
+
+    def refresh_tempomap(self):
+        self.tempomap[:] = []
+        for event in sorted(event
+                            for event in self.merged()
+                            if isinstance(event, SetTempoEvent)):
+            self.tempomap.add(event)
+        self.tempomap.update()
+
+    def merged(self):
+        return chain.from_iterable(self.pattern)
+
+    def iterevents(self):
+        pass
+
+    def on_events(self, track, events):
+        self.refresh_tempomap()
+
+    def on_tracks(self, pattern, tracks):
+        self.refresh_tempomap()
+
+    def on_cursor(self, eventstream, cursor):
+        if cursor < self.start_of_track:
+            self.cursor = self.start_of_track
+
+        if cursor > self.end_of_track:
+            self.cursor = self.end_of_track
+
+    def on_start_of_track(self, eventstream, start_of_track):
+        if start_of_track > self.cursor:
+            self.cursor = start_of_track
+
+        if start_of_track > self.end_of_track:
+            self.start_of_track = self.end_of_track
+
+    def on_end_of_track(self, eventstream, end_of_track):
+        if end_of_track < self.cursor:
+            self.cursor = end_of_track
+
+        if end_of_track < self.start_of_track:
+            self.end_of_track = self.start_of_track
+
 
 
 class Pattern(MutableSequence, EventDispatcher):
