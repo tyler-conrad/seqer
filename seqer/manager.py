@@ -1,14 +1,14 @@
 from bisect import insort
 from collections import Sized
 
-from midi.containers import Pattern
-from midi.containers import Track
+from python_midi.containers import Pattern as PythonMidiPattern
+from python_midi.containers import Track as PythonMidiTrack
 
 
 class PatternManager(Sized):
     def __init__(self, pattern=None):
         if not pattern:
-            pattern = Pattern(tick_relative=False)
+            pattern = PythonMidiPattern(tick_relative=False)
         self.pattern = pattern
         self.selected_track_list = []
 
@@ -25,7 +25,7 @@ class PatternManager(Sized):
             insort(track, event)
 
     def new_track(self):
-        track = Track(tick_relative=False)
+        track = PythonMidiTrack(tick_relative=False)
         self.pattern.append(track)
         self.select_track(track)
 
