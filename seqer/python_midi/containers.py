@@ -95,6 +95,9 @@ class Track(MutableSequence, EventDispatcher):
         self.tick_relative = tick_relative
         self.events[:] = events
 
+    def __repr__(self):
+        return "midi.Track(\\\n  %s)" % (pformat(list(self)).replace('\n', '\n  '), )
+
     def make_ticks_abs(self):
         if (self.tick_relative):
             self.tick_relative = False
