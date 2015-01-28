@@ -1,79 +1,53 @@
+from bisect import bisect_left
 from pprint import pformat
 from itertools import chain
 
 from midi import SetTempoEvent
+from midi import Event
 
 from kivy.event import EventDispatcher
 from kivy.properties import ListProperty
-from kivy.properties import NumericProperty
 
-from seqer.
+from seqer.python_midi.sequencer import TempoMap
 from seqer.collections import MutableSequence
 
+DEFAULT_RESOLUTION = 220
 
-class EventStream(EventDispatcher):
-    # in units of ticks
-    cursor = NumericProperty(0)
-    start_of_track = NumericProperty(0)
-    end_of_track = NumericProperty(0)
 
-    def __init__(self, pattern): # set end_of_track
+class EventStream(object):
+    def __init__(self, pattern):
         self.pattern = pattern
         self.resolution = pattern.resolution
-        self.tempomap = TempoMap(self)
-        self.refresh_tempomap()
 
-        for track in pattern:
-            track.bind(events=self.on_events)
-        pattern.bind(tracks=self.on_tracks)
-
-    def refresh_tempomap(self):
-        self.tempomap[:] = []
-        for event in sorted(event
-                            for event in self.merged()
-                            if isinstance(event, SetTempoEvent)):
-            self.tempomap.add(event)
-        self.tempomap.update()
+    def tempomap(self):
+        tempomap = TempoMap(self)
+        for event in self.merged():
+            if isinstance(event, SetTempoEvent):
+                tempomap.add(event)
+        tempomap.update()
+        return tempomap
 
     def merged(self):
         return chain.from_iterable(self.pattern)
 
-    def iterevents(self):
-        pass
+    def __getitem__(self, index_or_slice):
+        if not isinstance(index_or_slice, slice):
+            raise NotImplementedError(
+                'EventStream only supports slice operations')
 
-    def on_events(self, track, events):
-        self.refresh_tempomap()
+        event_list = sorted(self.merged())
+        left = bisect_left(event_list, Event(tick=index_or_slice.start))
+        right = bisect_left(event_list, Event(tick=index_or_slice.stop))
+        return event_list[left:right]
 
-    def on_tracks(self, pattern, tracks):
-        self.refresh_tempomap()
-
-    def on_cursor(self, eventstream, cursor):
-        if cursor < self.start_of_track:
-            self.cursor = self.start_of_track
-
-        if cursor > self.end_of_track:
-            self.cursor = self.end_of_track
-
-    def on_start_of_track(self, eventstream, start_of_track):
-        if start_of_track > self.cursor:
-            self.cursor = start_of_track
-
-        if start_of_track > self.end_of_track:
-            self.start_of_track = self.end_of_track
-
-    def on_end_of_track(self, eventstream, end_of_track):
-        if end_of_track < self.cursor:
-            self.cursor = end_of_track
-
-        if end_of_track < self.start_of_track:
-            self.end_of_track = self.start_of_track
-
+    def __len__(self):
+        return len(self.merged())
 
 
 class Pattern(MutableSequence, EventDispatcher):
     tracks = ListProperty([])
 
-    def __init__(self, tracks=[], resolution=220, format=1, tick_relative=True):
+    def __init__(self, tracks=[], resolution=DEFAULT_RESOLUTION, format=1, tick_relative=True):
         self.format = format
         self.resolution = resolution
         self.tick_relative = tick_relative
@@ -152,3 +126,5 @@ class Track(MutableSequence, EventDispatcher):
 
     def __len__(self):
         return len(self.tracks)
+
+
