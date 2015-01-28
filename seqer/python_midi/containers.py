@@ -4,6 +4,7 @@ from itertools import chain
 
 from midi import SetTempoEvent
 from midi import Event
+from midi import MetaEvent
 
 from kivy.event import EventDispatcher
 from kivy.properties import ListProperty
@@ -28,7 +29,8 @@ class EventStream(object):
         return tempomap
 
     def merged(self):
-        return chain.from_iterable(self.pattern)
+        return [event for event in chain.from_iterable(self.pattern)
+                if not isinstance(event, MetaEvent)]
 
     def __getitem__(self, index_or_slice):
         if not isinstance(index_or_slice, slice):
