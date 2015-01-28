@@ -7,6 +7,9 @@ from seqer.pypm_proxy import record_buffer
 from seqer.state import is_recording_lock
 from seqer import state
 
+# rtpmidi/rtpmidi/engines/midi/midi_in.py
+POLL_INTERVAL = 0.015
+
 
 class Sequencer(object):
     def set_pattern_manager(self, pattern_manager):
@@ -22,7 +25,8 @@ class Sequencer(object):
         if not self.pattern_manager:
             self.pattern_manager.new_track()
 
-        self.record_poller = Clock.schedule_interval(self.record_event, 0.015)
+        self.record_poller = Clock.schedule_interval(
+            self.record_event, POLL_INTERVAL)
 
     def record_event(self, dt):
         new_event_list = []
@@ -56,5 +60,5 @@ class Sequencer(object):
         pass
 
     def make_absolute(self, event):
-        event.tick = event.tick - self.start_time
+        event.tick -= self.start_time
         return event
