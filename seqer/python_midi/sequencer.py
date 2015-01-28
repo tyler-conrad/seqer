@@ -1,8 +1,6 @@
 # adapted from https://github.com/vishnubob/python-midi
 from bisect import bisect_left
 
-from seqer.util.misc import print_pipe
-
 
 class TempoMap(list):
     def __init__(self, stream):
@@ -47,25 +45,28 @@ class TempoMap(list):
 # window are skipped and have no effect.
 class EventStreamIterator(object):
     def __init__(self, stream, window, start_tick, end_tick):
+        assert window > 0
+        assert all([window > event.mpt for event in stream.tempomap()])
+        assert start_tick <= end_tick
+
         self.stream = stream
         self.window_length = window
         self.end_tick = end_tick
         self.lastedge = self.window_edge = start_tick
         # Setup next tempo timepoint
         self.ttp = self.next_ttp(self.window_edge)
-        # self.tempomap = iter(self.stream.tempomap)
-        self.tempo = self.next_tempo(self.lastedge, offset=-1)
+        self.tempo = self.next_tempo(self.lastedge)
         self.endoftrack = False
 
     def __iter__(self):
         return self
 
-    def next_tempo(self, lastedge, offset=0):
+    def next_tempo(self, lastedge):
         tempo_from_tick = dict([(tempo.tick, tempo)
                                 for tempo in self.stream.tempomap()])
         tick_list = sorted(tempo_from_tick.keys())
         return tempo_from_tick[tick_list[
-            print_pipe(bisect_left(tick_list, lastedge) + offset)]]
+            bisect_left(tick_list, lastedge)]]
 
     def next_ttp(self, windowedge):
         ttp_list = [tempo.tick for tempo in self.stream.tempomap()]
