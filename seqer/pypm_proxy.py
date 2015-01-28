@@ -2,8 +2,10 @@ from time import time
 from Queue import Queue
 from Queue import Empty
 
-from midi.fileio import FileReader, FileWriter
-from midi.util import write_varlen, read_varlen
+from midi import FileReader
+from midi import FileWriter
+from midi import write_varlen
+from midi import read_varlen
 
 from seqer.state import is_recording_lock
 from seqer import state
