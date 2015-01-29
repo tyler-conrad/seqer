@@ -61,12 +61,14 @@ class EventStreamIterator(object):
     def __iter__(self):
         return self
 
-    def next_tempo(self, lastedge):
+    def next_tempo(self, window_edge):
         tempo_from_tick = dict([(tempo.tick, tempo)
                                 for tempo in self.stream.tempomap()])
         tick_list = sorted(tempo_from_tick.keys())
+        index = bisect_left(tick_list, window_edge)
+        current_tempo_index = index - 1
         return tempo_from_tick[tick_list[
-            bisect_left(tick_list, lastedge)]]
+            index if current_tempo_index < 0 else current_tempo_index]]
 
     def next_ttp(self, windowedge):
         ttp_list = [tempo.tick for tempo in self.stream.tempomap()]
@@ -96,7 +98,7 @@ class EventStreamIterator(object):
             # account the tempo change.
             msused = (oldttp - self.lastedge) * self.tempo.mpt
             msleft = self.window_length - msused
-            self.tempo = self.next_tempo(self.lastedge)
+            self.tempo = self.next_tempo(self.window_edge)
             ticksleft = msleft / self.tempo.mpt
             self.window_edge = ticksleft + self.tempo.tick
 

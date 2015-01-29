@@ -29,15 +29,15 @@ def test_tempomap(tempo_event_list):
 
 
 def test_event_stream_iterator(mary_event_stream):
+    event_list = sorted([
+        event for event in list(mary_event_stream.merged())
+        if not isinstance(event, MetaEvent)])
+
     esi = EventStreamIterator(
         stream=mary_event_stream,
         window=20,
         start_tick=0,
-        end_tick=list(mary_event_stream.merged())[-1].tick + 1)
-
-    event_list = sorted([
-        event for event in list(mary_event_stream.merged())
-        if not isinstance(event, MetaEvent)])
+        end_tick=event_list[-1].tick + 1)
 
     assert list(chain.from_iterable(esi)) == event_list
 
@@ -45,7 +45,7 @@ def test_event_stream_iterator(mary_event_stream):
         stream=mary_event_stream,
         window=3,
         start_tick=0,
-        end_tick=list(mary_event_stream.merged())[-1].tick + 1)
+        end_tick=event_list[-1].tick + 1)
     assert list(chain.from_iterable(esi)) == event_list
 
     esi = EventStreamIterator(
@@ -54,3 +54,10 @@ def test_event_stream_iterator(mary_event_stream):
         start_tick=0,
         end_tick=0)
     assert list(chain.from_iterable(esi)) == []
+
+    esi = EventStreamIterator(
+        stream=mary_event_stream,
+        window=20,
+        start_tick=event_list[20].tick + 1,
+        end_tick=event_list[-1].tick + 1)
+    assert list(chain.from_iterable(esi)) == event_list[21:]
