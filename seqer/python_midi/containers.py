@@ -132,6 +132,6 @@ class Track(MutableSequence, EventDispatcher):
         self.events.insert(index, value)
 
     def __len__(self):
-        return len(self.tracks)
+        return len(self.events)
 
 
