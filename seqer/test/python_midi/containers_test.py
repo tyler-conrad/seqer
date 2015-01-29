@@ -25,6 +25,7 @@ def test_track_get_slice(mary_track_two, mary_track_two_event_list):
 
 
 def test_pattern_get_slice(mary_pattern):
+    mary_pattern.make_ticks_abs()
     assert mary_pattern[:1].tracks == [mary_pattern.tracks[0]]
 
 

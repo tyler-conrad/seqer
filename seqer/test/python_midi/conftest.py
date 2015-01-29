@@ -116,10 +116,10 @@ def mary_track_two(mary_track_two_event_list):
 @pytest.fixture
 def mary_pattern(mary_track_one, mary_track_two):
     pattern = Pattern(tracks=[mary_track_one, mary_track_two])
-    pattern.make_ticks_abs()
     return pattern
 
 
 @pytest.fixture
 def mary_event_stream(mary_pattern):
+    mary_pattern.make_ticks_abs()
     return EventStream(mary_pattern)
