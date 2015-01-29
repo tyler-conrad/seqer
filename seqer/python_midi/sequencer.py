@@ -45,8 +45,13 @@ class TempoMap(list):
 # window are skipped and have no effect.
 class EventStreamIterator(object):
     def __init__(self, stream, window, start_tick, end_tick):
+        assert isinstance(window, int)
         assert window > 0
         assert all([window > event.mpt for event in stream.tempomap()])
+        assert isinstance(start_tick, int)
+        assert isinstance(end_tick, int)
+        assert start_tick >= 0
+        assert end_tick >= 0
         assert start_tick <= end_tick
 
         self.stream = stream
