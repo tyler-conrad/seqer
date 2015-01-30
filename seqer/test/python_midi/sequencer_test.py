@@ -28,19 +28,23 @@ def test_tempomap(tempo_event_list):
                for left, right in window(tempomap[1:], 2)])
 
 
-def test_event_stream_iterator(mary_event_stream):
-    event_list = sorted([
+@pytest.fixture
+def event_list(mary_event_stream):
+    return sorted([
         event for event in list(mary_event_stream.merged())
         if not isinstance(event, MetaEvent)])
 
+
+def test_event_stream_iterator_normal_usage(mary_event_stream, event_list):
     esi = EventStreamIterator(
         stream=mary_event_stream,
         window=20,
         start_tick=0,
         end_tick=event_list[-1].tick + 1)
-
     assert list(chain.from_iterable(esi)) == event_list
 
+
+def test_event_stream_iterator_small_window(mary_event_stream, event_list):
     esi = EventStreamIterator(
         stream=mary_event_stream,
         window=3,
@@ -48,6 +52,8 @@ def test_event_stream_iterator(mary_event_stream):
         end_tick=event_list[-1].tick + 1)
     assert list(chain.from_iterable(esi)) == event_list
 
+
+def test_event_stream_iterator_start_end_tick_0(mary_event_stream):
     esi = EventStreamIterator(
         stream=mary_event_stream,
         window=20,
@@ -55,9 +61,11 @@ def test_event_stream_iterator(mary_event_stream):
         end_tick=0)
     assert list(chain.from_iterable(esi)) == []
 
+
+def test_event_stream_iterator_large_window(mary_event_stream, event_list):
     esi = EventStreamIterator(
         stream=mary_event_stream,
-        window=20,
-        start_tick=event_list[20].tick + 1,
+        window=20000,
+        start_tick=0,
         end_tick=event_list[-1].tick + 1)
-    assert list(chain.from_iterable(esi)) == event_list[21:]
+    assert list(chain.from_iterable(esi)) == event_list
