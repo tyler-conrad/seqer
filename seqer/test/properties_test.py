@@ -25,8 +25,7 @@ def test_mutable_list_property(event_dispatcher):
     global called
     called = False
 
-    with mute(event_dispatcher,
-              event_dispatcher.properties()['mutable_list_property']):
+    with mute(event_dispatcher, 'mutable_list_property'):
         event_dispatcher.mutable_list_property[1] = 1
     assert not called
 

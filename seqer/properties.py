@@ -16,9 +16,10 @@ class MutableListProperty(ListProperty):
 
 
 class MutablePropertyContextManager(object):
-    def __init__(self, event_dispatcher, mutable_property):
+    def __init__(self, event_dispatcher, mutable_property_name):
         self.event_dispatcher = event_dispatcher
-        self.mutable_property = mutable_property
+        self.mutable_property = (
+            event_dispatcher.properties()[mutable_property_name])
 
     def set_muted(self, is_muted):
         self.event_dispatcher._muted[self.mutable_property.name] = is_muted
@@ -30,5 +31,5 @@ class MutablePropertyContextManager(object):
         self.set_muted(False)
 
 
-def mute(event_dispatcher, mutable_property):
-    return MutablePropertyContextManager(event_dispatcher, mutable_property)
+def mute(event_dispatcher, mutable_property_name):
+    return MutablePropertyContextManager(event_dispatcher, mutable_property_name)
